@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QCM Python : bases, entrées/sorties, conditions et boucles</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--fg:#1c2330;--muted:#5b6578;--line:#d9dee7;--accent:#2b5fa8;--accent-fg:#fff;--code:#eef1f6;--ok:#1f7a4d;--okbg:#e4f4ec;--ko:#b3392f;--kobg:#fbe9e7}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1a2029;--fg:#e8ecf3;--muted:#9aa5b8;--line:#2d3644;--accent:#7aa7e6;--accent-fg:#101620;--code:#10151c;--ok:#5fcf95;--okbg:#173024;--kobg:#3a1f1c;--ko:#f08a80}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 48px}
+main{max-width:640px;margin:0 auto}
+h1{font-size:1.25rem;line-height:1.3;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 20px;font-size:.95rem}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin:8px 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.q{font-size:1.1rem;font-weight:600;margin:0 0 12px;white-space:pre-line}
+pre{background:var(--code);border-radius:6px;padding:12px 14px;margin:0 0 14px;overflow-x:auto;font:.92rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:baseline;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt b{color:var(--muted);font-weight:600;min-width:1.2em}
+.opt span{overflow-wrap:anywhere}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.ko{border-color:var(--ko);background:var(--kobg)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fb{margin-top:14px;padding:12px 14px;border-radius:8px;border-left:4px solid var(--ok);background:var(--okbg)}
+.fb.ko{border-color:var(--ko);background:var(--kobg)}
+.fb p{margin:0}
+.fb strong{display:block;margin-bottom:2px}
+.btn{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-fg);border:0;border-radius:8px;padding:10px 20px;cursor:pointer;margin-top:16px}
+.score{font-size:2.4rem;font-weight:700;margin:0}
+.rev{padding-left:1.1rem;margin:12px 0 0}
+.rev li{margin-bottom:10px}
+.rev small{display:block;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>QCM Python</h1>
+<p class="sub">Structures simples, affichage et saisie, conditions et boucles</p>
+<div id="app"></div>
+</main>
+<script>
+const Q=[
+{q:`Quel est le type de la variable x après l'instruction : x = 3 / 2 ?`,o:[`int`,`float`,`str`,`bool`],a:1,e:`En Python 3, l'opérateur / renvoie toujours un float (ici 1.5), même si le résultat est un entier (ex : 4 / 2 donne 2.0).`},
+{q:`Que vaut l'expression 7 // 2 ?`,o:[`3.5`,`4`,`3`,`1`],a:2,e:`// est la division entière : 7 = 2 × 3 + 1, donc le quotient est 3.`},
+{q:`Que vaut l'expression 17 % 5 ?`,o:[`3`,`2`,`3.4`,`12`],a:1,e:`% est l'opérateur modulo (reste de la division entière) : 17 = 5 × 3 + 2, donc le reste est 2.`},
+{q:`Parmi ces noms, lequel est un nom de variable valide en Python ?`,o:[`2eme_valeur`,`ma-variable`,`ma_variable`,`for`],a:2,e:`Un nom de variable ne peut pas commencer par un chiffre, ne peut pas contenir de tiret et ne doit pas être un mot réservé comme for. ma_variable est valide.`},
+{q:`Qu'affiche print("3" + "4") ?`,o:[`7`,`34`,`3 4`,`Une erreur`],a:1,e:`"3" et "4" sont des chaînes de caractères : l'opérateur + les concatène, ce qui donne "34".`},
+{q:`Quel est le type de la valeur renvoyée par la fonction input() ?`,o:[`int`,`float`,`str`,`Cela dépend de ce que tape l'utilisateur`],a:2,e:`input() renvoie toujours une chaîne de caractères (str), même si l'utilisateur saisit un nombre.`},
+{q:`Que produit le code suivant ?`,c:`nom = "Léa"\nage = 17\nprint(f"{nom} a {age} ans")`,o:[`{nom} a {age} ans`,`nom a age ans`,`Léa a 17 ans`,`Une erreur de syntaxe`],a:2,e:`Dans une f-string (chaîne préfixée par f), les expressions entre accolades {} sont remplacées par leur valeur. Ici {nom} devient Léa et {age} devient 17.`},
+{q:`Que produit le code suivant ?`,c:`a = "Py"\nb = "thon"\nc = a + b\nprint(c)`,o:[`Py thon`,`Python`,`Py+thon`,`Une erreur`],a:1,e:`L'opérateur + appliqué à deux chaînes de caractères les concatène, c'est-à-dire les met bout à bout, sans ajouter d'espace. c vaut donc "Python".`},
+{q:`Que se passe-t-il avec ce code si l'utilisateur saisit 20 ?`,c:`age = input("Age : ")\nprint(age + 1)`,o:[`Il affiche 21`,`Il affiche 201`,`Il affiche 20 1`,`Il provoque une TypeError`],a:3,e:`age est une chaîne (str) et 1 est un entier : on ne peut pas additionner str et int. Il faudrait écrire int(age) + 1.`},
+{q:`Quelle instruction permet de lire un nombre entier saisi au clavier ?`,o:[`n = input(int)`,`n = int(input())`,`n = input() as int`,`n = str(input())`],a:1,e:`On convertit la chaîne renvoyée par input() en entier grâce à int().`},
+{q:`Qu'affiche le code suivant ?`,c:`x = 10\nif x > 5:\n    print("A")\nelif x > 8:\n    print("B")\nelse:\n    print("C")`,o:[`A`,`B`,`A puis B`,`C`],a:0,e:`La première condition (x > 5) est vraie : son bloc est exécuté et les branches elif/else sont ignorées.`},
+{q:`Quel opérateur permet de tester l'égalité de deux valeurs dans une condition ?`,o:[`=`,`==`,`===`,`:=`],a:1,e:`= est l'affectation, == est le test d'égalité. === n'existe pas en Python.`},
+{q:`Quelle est la valeur de l'expression not (True and False) ?`,o:[`True`,`False`,`None`,`Une erreur`],a:0,e:`True and False vaut False, et not False vaut True.`},
+{q:`Quel mot-clé Python correspond au « sinon si » d'une structure conditionnelle ?`,o:[`else if`,`elseif`,`elif`,`elsif`],a:2,e:`Python utilise le mot-clé elif, contraction de « else if ».`},
+{q:`Que vaut l'expression 5 < x < 10 lorsque x = 10 ?`,o:[`True`,`False`,`10`,`Une erreur de syntaxe`],a:1,e:`Python accepte les comparaisons chaînées : 5 < x < 10 équivaut à 5 < x and x < 10. Avec x = 10, x < 10 est faux, donc le résultat est False.`},
+{q:`Quelles valeurs sont parcourues par for i in range(5) ?`,o:[`1, 2, 3, 4, 5`,`0, 1, 2, 3, 4, 5`,`0, 1, 2, 3, 4`,`1, 2, 3, 4`],a:2,e:`range(5) génère les entiers de 0 à 4 : la borne supérieure est exclue.`},
+{q:`Qu'affiche le code suivant ?`,c:`for i in range(2, 10, 3):\n    print(i, end=" ")`,o:[`2 5 8`,`2 5 8 10`,`3 6 9`,`2 4 6 8`],a:0,e:`range(début, fin, pas) : on part de 2 et on avance de 3 en 3 tant que la valeur est strictement inférieure à 10, soit 2, 5, 8.`},
+{q:`Que vaut i à la fin de l'exécution du code suivant ?`,c:`i = 0\nwhile i < 3:\n    i += 1`,o:[`2`,`3`,`4`,`0`],a:1,e:`La boucle s'arrête dès que i < 3 devient faux, c'est-à-dire quand i atteint 3.`},
+{q:`Quel est le rôle de l'instruction break dans une boucle ?`,o:[`Passer directement à l'itération suivante`,`Interrompre définitivement la boucle en cours`,`Mettre le programme en pause`,`Recommencer la boucle depuis le début`],a:1,e:`break sort immédiatement de la boucle la plus interne. C'est continue qui passe à l'itération suivante.`},
+{q:`Qu'affiche le code suivant ?`,c:`for i in range(5):\n    if i % 2 == 0:\n        continue\n    print(i, end=" ")`,o:[`0 2 4`,`0 1 2 3 4`,`1 3`,`1 2 3 4`],a:2,e:`Pour les valeurs paires (0, 2, 4), continue saute le print. Seules les valeurs impaires, 1 et 3, sont affichées.`}
+];
+const app=document.getElementById("app"),L="ABCD";
+let i=0,score=0,wrong=[];
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!==undefined)n.textContent=x;return n}
+function show(){
+  const d=Q[i];app.replaceChildren();
+  const meta=el("div","meta");meta.append(el("span","","Question "+(i+1)+" sur "+Q.length),el("span","","Score : "+score));
+  const bar=el("div","bar"),fill=el("i");fill.style.width=(i/Q.length*100)+"%";bar.append(fill);
+  const card=el("div","card");card.append(el("p","q",d.q));
+  if(d.c)card.append(el("pre","",d.c));
+  const opts=el("div","opts");
+  d.o.forEach((t,k)=>{const b=el("button","opt");b.append(el("b","",L[k]),el("span","",t));b.onclick=()=>pick(k,opts,card);opts.append(b)});
+  card.append(opts);app.append(bar,meta,card);
+}
+function pick(k,opts,card){
+  const d=Q[i],good=k===d.a;
+  if(good)score++;else wrong.push({i,k});
+  [...opts.children].forEach((b,n)=>{b.disabled=true;if(n===d.a)b.classList.add("ok");else if(n===k)b.classList.add("ko")});
+  const fb=el("div","fb"+(good?"":" ko"));fb.setAttribute("role","status");
+  fb.append(el("strong","",good?"Bonne réponse.":"Mauvaise réponse. Il fallait "+L[d.a]+"."),el("p","",d.e));
+  const nx=el("button","btn",i<Q.length-1?"Question suivante":"Voir le résultat");
+  nx.onclick=()=>{i++;i<Q.length?show():end()};
+  card.append(fb,nx);nx.focus();
+}
+function end(){
+  app.replaceChildren();
+  const card=el("div","card");
+  card.append(el("p","score",score+" / "+Q.length),
+    el("p","",score>=Q.length*0.8?"Très bien, les bases sont acquises.":score>=Q.length/2?"Bon début. Revoyez les points ci-dessous.":"À retravailler : relisez le cours puis recommencez."));
+  if(wrong.length){
+    card.append(el("p","q","Questions à revoir"));
+    const ol=el("ol","rev");
+    wrong.forEach(w=>{const d=Q[w.i],li=el("li","",d.q+(d.c?" ("+d.c.split("\n")[0]+" …)":""));
+      li.append(el("small","","Bonne réponse : "+d.o[d.a]),el("small","",d.e));ol.append(li)});
+    card.append(ol);
+  }
+  const r=el("button","btn","Recommencer");r.onclick=()=>{i=0;score=0;wrong=[];show()};
+  card.append(r);app.append(card);r.focus();
+}
+show();
+</script>
+</body>
+</html>
